@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwmust.dao.FileDao">
+    <!--插入一条文件信息-->
+    <insert id="insertFileInfo" parameterType="com.wwmust.model.FileInfo">
+        insert into file_info
+        (file_id, file_name, file_url, file_size,
+        create_user, create_time)
+        values
+        (#{fileId},#{fileName},#{fileUrl},#{fileSize},
+        1,#{createTime})
+    </insert>
+
+    <!--查询文件信息-->
+    <select id="selectFileInfo" parameterType="String" resultType="com.wwmust.model.FileInfo">
+        select t.*
+        from file_info t
+        where t.file_id = #{fileId} and t.status = 1
+    </select>
+
+    <!--插入多条文件信息-->
+    <insert id="insertFileInfos" parameterType="com.wwmust.model.FileInfo">
+        insert into file_info
+        (file_id, file_name, file_url, file_size,
+        create_user, create_time)
+        values
+        <foreach collection="array" item="i" separator=",">
+            (#{i.fileId},#{i.fileName},#{i.fileUrl},#{i.fileSize},
+            1,#{i.createTime})
+        </foreach>
+    </insert>
+
+    <!--查询文件信息-->
+    <select id="selectFileInfos" parameterType="String" resultType="com.wwmust.model.FileInfo">
+        select t.*
+        from  file_info t
+        where t.file_id = #{fileId} and t.status = 1
+    </select>
+</mapper>
