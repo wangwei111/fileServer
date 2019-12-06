@@ -7,16 +7,28 @@ import com.wwmust.utils.FileIdUtils;
 import com.wwmust.utils.FileInfoUtils;
 import com.wwmust.utils.FileStoreUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 @Service
 public class FileServiceImpl implements FileService {
     @Autowired
     private FileDao fileDao;
 
+    @Value("${system.url}")
+    private String systemUrl;
     /**
      * 存储单个文件
      * @param file
@@ -42,16 +54,18 @@ public class FileServiceImpl implements FileService {
         String fileName = FileIdUtils.getFileName(file.getOriginalFilename(), fileId);
         //存储文件
         //TODO 后期使用 消息队列 转存 到 文件服务器
-        FileStoreUtils.storeFileByName(file, "D://aa", fileName);
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String timestamp = format.format(new Date());
+        String path = ClassUtils.getDefaultClassLoader().getResource("").getPath()+"/static/images/"+timestamp+"/";
+        FileStoreUtils.storeFileByName(file, path, fileName);
         //封装信息
         FileInfo fileInfo = FileInfoUtils.packFileInfo(file);
         fileInfo.setFileId(fileId);
         //TODO url 使用 存储在文件服务器上的 url
-        fileInfo.setFileUrl("D://aa//" + fileName);
+        fileInfo.setFileUrl(path + fileName);
         //存储到数据库
         fileDao.insertFileInfo(fileInfo);
-        return fileInfo.getFileUrl();
+        return systemUrl+"static/images/"+timestamp+fileName;
     }
 
     @Override
@@ -91,15 +105,16 @@ public class FileServiceImpl implements FileService {
         String[] fileNames = FileIdUtils.getFileNames(files);
         //存储文件
         //TODO 后期使用 消息队列 转存 到 文件服务器
-        FileStoreUtils.storeFilesByNames(files,"D://aa",fileNames);
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String timestamp = format.format(new Date());
+        String path = ClassUtils.getDefaultClassLoader().getResource("").getPath()+"/static/images/"+timestamp+"/";
+        FileStoreUtils.storeFilesByNames(files,path,fileNames);
         //生成信息
         //TODO url 使用 存储在文件服务器上的 url
         String[] fileUrls = new String[files.length];
         for (int i = 0; i < fileUrls.length; i++) {
-            fileUrls[i] = "D://aa//" + fileNames[i];
+            fileUrls[i] = path + fileNames[i];
         }
-
         //装配信息
         FileInfo[] fileInfos = FileInfoUtils.packFileInfos(files,fileId,fileUrls);
         fileDao.insertFileInfos(fileInfos);
