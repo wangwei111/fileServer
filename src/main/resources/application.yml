@@ -4,7 +4,7 @@ server:
   # 服务
   servlet:
     # 服务名
-    context-path: /FileService
+    context-path: /
 
 spring:
       application:
