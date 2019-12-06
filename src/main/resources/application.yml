@@ -1,6 +1,6 @@
 server:
   # 端口
-  port: 8002
+  port: 8083
   # 服务
   servlet:
     # 服务名
