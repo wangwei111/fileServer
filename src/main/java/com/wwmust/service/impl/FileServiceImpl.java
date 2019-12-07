@@ -29,6 +29,9 @@ public class FileServiceImpl implements FileService {
 
     @Value("${system.url}")
     private String systemUrl;
+
+    @Value("${file.file-dir}")
+    private  String fileDir;
     /**
      * 存储单个文件
      * @param file
@@ -56,7 +59,7 @@ public class FileServiceImpl implements FileService {
         //TODO 后期使用 消息队列 转存 到 文件服务器
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String timestamp = format.format(new Date());
-        String path = ClassUtils.getDefaultClassLoader().getResource("").getPath()+"/static/images/"+timestamp+"/";
+        String path = fileDir+"/"+timestamp+"/";
         FileStoreUtils.storeFileByName(file, path, fileName);
         //封装信息
         FileInfo fileInfo = FileInfoUtils.packFileInfo(file);
@@ -65,7 +68,7 @@ public class FileServiceImpl implements FileService {
         fileInfo.setFileUrl(path + fileName);
         //存储到数据库
         fileDao.insertFileInfo(fileInfo);
-        return systemUrl+"static/images/"+timestamp+fileName;
+        return systemUrl+"/images/"+timestamp+"/"+fileName;
     }
 
     @Override
@@ -107,7 +110,7 @@ public class FileServiceImpl implements FileService {
         //TODO 后期使用 消息队列 转存 到 文件服务器
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String timestamp = format.format(new Date());
-        String path = ClassUtils.getDefaultClassLoader().getResource("").getPath()+"/static/images/"+timestamp+"/";
+        String path = fileDir+"/"+timestamp+"/";
         FileStoreUtils.storeFilesByNames(files,path,fileNames);
         //生成信息
         //TODO url 使用 存储在文件服务器上的 url

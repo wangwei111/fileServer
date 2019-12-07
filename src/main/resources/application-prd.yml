@@ -7,7 +7,7 @@ spring:
     # 数据源驱动
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 数据库url
-    url: jdbc:mysql://212.64.79.154:3310/wwmust?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://172.17.0.2:3310/wwmust?useUnicode=true&characterEncoding=utf-8&useSSL=false
     # 数据库用户名
     username: root
     # 数据库用户密码
@@ -26,7 +26,7 @@ mybatis:
 
 ############################################################################
 file:
-  file-dir: /home/data/images/
+  file-dir: /usr/local/tomcat-images/webapps/ROOT/images
 
 system:
-  url: http://212.64.79.154:8083/
+  url: http://212.64.79.154:8301
